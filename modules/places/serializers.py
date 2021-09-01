@@ -43,9 +43,16 @@ class DepartmentSerializer(serializers.ModelSerializer):
         return instance
 
 class TypePlaceSerializer(serializers.ModelSerializer): 
+
+    status=serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_status(obj):
+        return False
+
     class Meta: 
         model = TypePlace
-        fields =['typeplace_id','name','icon']
+        fields =['typeplace_id','name','icon','status']
     
     def create(self, validated_data): 
         instance = self.Meta.model(**validated_data)
@@ -89,9 +96,15 @@ class CategoryTpSerializer(serializers.ModelSerializer):
         return obj.category.name
 
 class CategorySerializer(serializers.ModelSerializer):
+    status=serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_status(obj):
+        return False
+
     class Meta: 
         model = Category
-        fields =['category_id', 'name', 'icon']
+        fields =['category_id', 'name', 'icon','status']
 
     def create(self, validated_data): 
         instance = self.Meta.model(**validated_data)
@@ -99,9 +112,15 @@ class CategorySerializer(serializers.ModelSerializer):
         return instance
 
 class SubCategorySerializer(serializers.ModelSerializer):
+    status=serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_status(obj):
+        return False
+
     class Meta: 
         model = SubCategory
-        fields =['subcategory_id', 'name', 'icon']
+        fields =['subcategory_id', 'name', 'icon','status']
 
     def create(self, validated_data): 
         instance = self.Meta.model(**validated_data)

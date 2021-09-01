@@ -27,8 +27,8 @@ class RegisterView(APIView):
         if(serializer.is_valid()):
 
             accounts= Account.objects.all()
-            serializer=RegisterAccountSerializer(accounts, many=True)
-            for dicts in serializer.data:
+            nserializer=RegisterAccountSerializer(accounts, many=True)
+            for dicts in nserializer.data:
                 if dicts['email']==email:
                     accountId=dicts['account_id']
 
@@ -47,7 +47,7 @@ class RegisterView(APIView):
                 subcatserializer.is_valid(raise_exception=True)
                 subcatserializer.save()      
 
-
+        
         return Response(serializer.data) 
         
 class ListPreferedTypePlace(APIView): 
