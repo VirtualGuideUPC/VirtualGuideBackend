@@ -129,10 +129,9 @@ class RegisterAccountSerializer(serializers.ModelSerializer):
 class AccountSerializerAux(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['email', 'name', 'last_name', 'birthday', 'country', 'icon']
+        fields = ['name', 'last_name', 'birthday', 'country', 'icon']
 
     def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
         instance.name = validated_data.get('name', instance.name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.birthday = validated_data.get('birthday', instance.birthday)
