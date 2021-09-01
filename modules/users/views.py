@@ -4,7 +4,8 @@ from modules.places.models import Province, Department, TouristicPlace
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import RegisterAccountSerializer, AccountSerializer, FavouriteSerializer, FavouriteTpSerializer, PreferenceCategorySerializer, PreferenceTypePlaceSerializer, PreferenceSubCategorySerializer
+from .serializers import RegisterAccountSerializer, AccountSerializer, FavouriteSerializer, FavouriteTpSerializer, \
+    PreferenceCategorySerializer, PreferenceTypePlaceSerializer, PreferenceSubCategorySerializer, AccountSerializerAux
 from .models import *
 import jwt   
 import datetime
@@ -426,3 +427,31 @@ class AccountListView(APIView):
         accounts= Account.objects.all()
         serializer=RegisterAccountSerializer(accounts, many=True)
         return Response(serializer.data)
+
+class UpdateUser(APIView):
+    def put(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        user_id = request.data['user']
+        account = Account.objects.filter(account_id=user_id).first()
+
+
+        if 'image' not in request.FILES:
+            image = []
+        else:
+            image = dict(request.FILES)['image']
+            image = image[0]
+
+        serializer = AccountSerializerAux(account, data=request.data, context={'image': image})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

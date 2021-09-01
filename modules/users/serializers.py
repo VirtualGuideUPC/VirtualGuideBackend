@@ -3,6 +3,8 @@ from modules.places.models import Department
 from modules.places.serializers import NearbyPlaceSerializer
 from rest_framework import serializers
 from .models import *
+import cloudinary.uploader
+
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,6 +22,7 @@ class AccountSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
 
 class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -122,4 +125,22 @@ class RegisterAccountSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
-    
+
+class AccountSerializerAux(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['email', 'name', 'last_name', 'birthday', 'country', 'icon']
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.name = validated_data.get('name', instance.name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.birthday = validated_data.get('birthday', instance.birthday)
+        if len(self.context.get("image")) == 0:
+            instance.icon = validated_data.get('icon', instance.icon)
+        else:
+            image = self.context.get("image")
+            res = cloudinary.uploader.upload(image)
+            instance.icon = validated_data.get('icon', res['secure_url'])
+        instance.save()
+        return instance
