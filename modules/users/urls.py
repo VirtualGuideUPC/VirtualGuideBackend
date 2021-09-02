@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import path
 from ..places.views import TypePlaceListView, CategoryListView, SubCategoryListView
-from .views import ListPreferedSubCategory, ListPreferredTypePlacesByUser, ListPreferredSubCategoriesByUser, \
+from .views import AccountListView, ListPreferedSubCategory, ListPreferredTypePlacesByUser, ListPreferredSubCategoriesByUser, \
     ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourite, AddCategoryPreference, \
     AddTypePlacePreference, ListFavourite, ListFavouriteDepartment, ListPreference, RegisterView, LoginView, \
     UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser
@@ -29,5 +29,6 @@ urlpatterns = [
     path('users/getAllPreferenceTypePlaces/',ListPreferedTypePlace.as_view()),
     path('users/getAllPreferenceCategories/',ListPreferedCategory.as_view()),
     path('users/getAllPreferenceSubCategories/',ListPreferedSubCategory.as_view()),
+    path('users/getAllUsers/',AccountListView.as_view()),
 
 ]

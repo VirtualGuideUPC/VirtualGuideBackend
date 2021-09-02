@@ -9,7 +9,7 @@ import cloudinary.uploader
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['email', 'password', 'name', 'last_name', 'birthday', 'country']
+        fields = ['email', 'password', 'name', 'last_name', 'birthday', 'country','icon']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -121,7 +121,7 @@ class PreferenceTypePlaceSerializer(serializers.ModelSerializer):
 class RegisterAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['account_id', 'email', 'password', 'name', 'last_name', 'birthday', 'country']
+        fields = ['account_id', 'email', 'password', 'name', 'last_name', 'birthday', 'country', 'icon']
         extra_kwargs = {
             'password': {'write_only': True}
         }
