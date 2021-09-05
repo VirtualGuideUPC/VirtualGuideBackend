@@ -15,7 +15,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
 class ReviewTpSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField('get_user_name')
 

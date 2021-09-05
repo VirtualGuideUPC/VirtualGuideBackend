@@ -72,3 +72,5 @@ class ReviewUserListView(APIView):
         serializer = TotalReviewSerializerUser(reviews,many=True)
 
         return Response(serializer.data)
+
+

@@ -23,6 +23,26 @@ class AccountSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['message_id', 'text', 'user', 'is_user', 'date', 'time','url']
+  
+    def create(self, validated_data):
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        instance.text = validated_data.get('text', instance.text)
+        instance.user = validated_data.get('user', instance.user)
+        instance.is_user = validated_data.get('is_user', instance.is_user)
+        instance.date = validated_data.get('date', instance.date)
+        instance.time = validated_data.get('time', instance.time)
+        instance.url = validated_data.get('url', instance.url)
+        instance.save()
+        return instance
+
 
 class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,6 +53,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
         instance = self.Meta.model(**validated_data)
         instance.save()
         return instance
+
 
 class FavouriteTpSerializer(serializers.ModelSerializer):
     touristic_place_detail = serializers.SerializerMethodField('get_tp')
