@@ -9,7 +9,6 @@ class Country(models.Model):
     country_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=70)
 
-
 class Account(AbstractUser):
     account_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=70)
@@ -27,6 +26,14 @@ class Account(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+class Message(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    text = models.CharField(max_length=255)
+    user = models.ForeignKey(Account,null=False,blank=False, default=1, on_delete=models.CASCADE)
+    is_user=models.BooleanField(default=False)
+    date = models.DateField(default="2021-08-16")
+    time = models.TimeField(auto_now_add=True)
+    url = models.CharField(max_length=300, default=None, blank=True, null=True)
 
 class Favourite(models.Model):
     favourite_id = models.AutoField(primary_key=True)

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .serializers import RegisterAccountSerializer, AccountSerializer, FavouriteSerializer, FavouriteTpSerializer, \
-    PreferenceCategorySerializer, PreferenceTypePlaceSerializer, PreferenceSubCategorySerializer, AccountSerializerAux
+    PreferenceCategorySerializer, PreferenceTypePlaceSerializer, PreferenceSubCategorySerializer, AccountSerializerAux, MessageSerializer
 from .models import *
 import jwt   
 import datetime
@@ -455,3 +455,76 @@ class UpdateUser(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateMessage(APIView):
+    def post(self, request):
+        serializer = MessageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class UpdateMessage(APIView):
+    def put(self, request):
+        message_id = request.data['message_id']
+        message = Message.objects.get(pk=message_id,)
+        serializer = MessageSerializer(message, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MessageListView(APIView):
+    def get(self, request):
+
+        messages= Message.objects.all()
+        serializer=MessageSerializer(messages, many=True)
+
+        now=datetime.datetime.now().strftime('%Y-%m-%d')
+        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        for dict in serializer.data:
+            if dict['date']==now:
+                dict['date']='Today'
+            elif dict['date']==yesterday:
+                dict['date']='Yesterday'
+        return Response(serializer.data)
+
+class MessageById(APIView):
+    def get(self, request, pk):
+        messages=Message.objects.filter(pk=pk)
+        serializer=MessageSerializer(messages,many=True)
+
+        now=datetime.datetime.now().strftime('%Y-%m-%d')
+        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        for dict in serializer.data:
+            if dict['date']==now:
+                dict['date']='Today'
+            elif dict['date']==yesterday:
+                dict['date']='Yesterday'
+
+        return Response(serializer.data)
+    
+    def delete(self,request,pk):
+        message=Message.objects.filter(pk=pk)
+        if message.exists():
+            serializer=MessageSerializer(message)
+            message.delete()
+            return Response({"Success!":"Message deleted succesfully"})
+        else:
+            response = Response({"Error":"Message does not exist!"})
+        return response
+
+
+class MessageByUserId(APIView):
+    def get(self, request, pk):
+        messages=Message.objects.filter(user=pk)
+        serializer=MessageSerializer(messages,many=True)
+
+        now=datetime.datetime.now().strftime('%Y-%m-%d')
+        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        for dict in serializer.data:
+            if dict['date']==now:
+                dict['date']='Today'
+            elif dict['date']==yesterday:
+                dict['date']='Yesterday'
+
+        return Response(serializer.data)

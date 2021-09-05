@@ -4,7 +4,8 @@ from ..places.views import TypePlaceListView, CategoryListView, SubCategoryListV
 from .views import AccountListView, ListPreferedSubCategory, ListPreferredTypePlacesByUser, ListPreferredSubCategoriesByUser, \
     ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourite, AddCategoryPreference, \
     AddTypePlacePreference, ListFavourite, ListFavouriteDepartment, ListPreference, RegisterView, LoginView, \
-    UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser
+    UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser, CreateMessage, MessageListView, \
+    UpdateMessage, MessageById, MessageByUserId
 
 urlpatterns = [
     path('users/register/', RegisterView.as_view()),
@@ -30,5 +31,9 @@ urlpatterns = [
     path('users/getAllPreferenceCategories/',ListPreferedCategory.as_view()),
     path('users/getAllPreferenceSubCategories/',ListPreferedSubCategory.as_view()),
     path('users/getAllUsers/',AccountListView.as_view()),
-
+    path('users/message/create/', CreateMessage.as_view()),
+    path('users/message/update/', UpdateMessage.as_view()),
+    path('users/getAllMessages/', MessageListView.as_view()),
+    path('users/message/id/<str:pk>',MessageById.as_view()),
+    path('users/message/userid/<str:pk>', MessageByUserId.as_view())
 ]
