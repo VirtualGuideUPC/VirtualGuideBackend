@@ -87,14 +87,21 @@ WSGI_APPLICATION = 'vgbknd.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'heroku_4496d54c881cf2b',
-        'USER': 'bf410fde56cda5',
-        'PASSWORD': '1318e9d1',
-        'HOST': 'us-cdbr-east-04.cleardb.com',
+        'NAME': 'vgdatabase',
+        'USER': 'admin',
+        'PASSWORD': 'virtualguide99',
+        'HOST': 'vguidedb.cluster-c5oemcp7pfcq.us-east-1.rds.amazonaws.com',
         'PORT': ''
     }
 }
-
+# 'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'heroku_4496d54c881cf2b',
+#         'USER': 'bf410fde56cda5',
+#         'PASSWORD': '1318e9d1',
+#         'HOST': 'us-cdbr-east-04.cleardb.com',
+#         'PORT': ''
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
