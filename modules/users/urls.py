@@ -17,7 +17,7 @@ urlpatterns = [
     path('users/preference/category/create/', AddCategoryPreference.as_view()),
     path('users/preference/typeplace/create/', AddTypePlacePreference.as_view()),
     path('users/preference/subcategory/create/', AddSubCategoryPreference.as_view()),
-    path('users/prefrence/subcategory/<str:pk>', SubCategoryPrefById.as_view()),
+    path('users/preference/subcategory/<str:pk>', SubCategoryPrefById.as_view()),
     path('users/<str:pk>/favourites/departments/', ListFavouriteDepartment.as_view()),
     path('users/<str:pk>/favourites/departments/<str:pk2>/', ListFavourite.as_view()),
     path('users/preferences/<str:pk>/', ListPreference.as_view()),
