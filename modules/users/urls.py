@@ -5,7 +5,7 @@ from .views import AccountListView, ListPreferedSubCategory, ListPreferredTypePl
     ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourite, AddCategoryPreference, \
     AddTypePlacePreference, ListFavourite, ListFavouriteDepartment, ListPreference, RegisterView, LoginView, \
     UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser, CreateMessage, MessageListView, \
-    UpdateMessage, MessageById, MessageByUserId
+    UpdateMessage, MessageById, MessageByUserId, UpdateSubcategoryPreference, AddSubCategoryPreference, SubCategoryPrefById
 
 urlpatterns = [
     path('users/register/', RegisterView.as_view()),
@@ -16,6 +16,8 @@ urlpatterns = [
     path('users/favourite/create/', AddFavourite.as_view()),
     path('users/preference/category/create/', AddCategoryPreference.as_view()),
     path('users/preference/typeplace/create/', AddTypePlacePreference.as_view()),
+    path('users/preference/subcategory/create/', AddSubCategoryPreference.as_view()),
+    path('users/prefrence/subcategory/<str:pk>', SubCategoryPrefById.as_view()),
     path('users/<str:pk>/favourites/departments/', ListFavouriteDepartment.as_view()),
     path('users/<str:pk>/favourites/departments/<str:pk2>/', ListFavourite.as_view()),
     path('users/preferences/<str:pk>/', ListPreference.as_view()),
@@ -23,6 +25,7 @@ urlpatterns = [
     path('users/getSubCategories/<str:pk>/', ListPreferredSubCategoriesByUser.as_view()),
     path('users/getTypePlaces/<str:pk>/', ListPreferredTypePlacesByUser.as_view()),    
     path('users/preference/category/update/', UpdateCategoryPreference.as_view()),
+    path('users/preference/subcategory/update/', UpdateSubcategoryPreference.as_view()),
     path('users/preference/typeplace/update/', UpdateTypePlacePreference.as_view()),
     path('users/getAllTypePlaces/',TypePlaceListView.as_view()),
     path('users/getAllSubcategories/', SubCategoryListView.as_view()),

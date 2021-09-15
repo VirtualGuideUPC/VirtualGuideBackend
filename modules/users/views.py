@@ -89,6 +89,13 @@ class AddTypePlacePreference(APIView):
         serializer.save()
         return Response(serializer.data)
 
+class AddSubCategoryPreference(APIView):
+    def post(self, request):
+        serializer = PreferenceSubCategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
@@ -421,6 +428,29 @@ class UpdateTypePlacePreference(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UpdateSubcategoryPreference(APIView):
+    def put(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        user_id = request.data['user']
+        subcat=request.data['subcategory']
+        prsubcategory=PreferenceSubCategory.objects.filter(user=user_id, subcategory=subcat).first()
+        serializer = PreferenceSubCategorySerializer(prsubcategory, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class AccountListView(APIView):
     def get(self, request):
 
@@ -472,6 +502,8 @@ class UpdateMessage(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class MessageListView(APIView):
     def get(self, request):
@@ -528,3 +560,17 @@ class MessageByUserId(APIView):
                 dict['date']='Yesterday'
 
         return Response(serializer.data)
+
+class SubCategoryPrefById(APIView):
+    def get(self, request, pk):
+        subcategorypref=PreferenceSubCategory.objects.filter(pk=pk)
+        serializer=PreferenceSubCategorySerializer(subcategorypref, many=True)
+        return Response(serializer.data)
+    def delete(self,request,pk):
+        subcategorypref = PreferenceSubCategory.objects.filter(pk=pk)
+        if subcategorypref.exists():
+            serializer=PreferenceSubCategorySerializer(subcategorypref)
+            subcategorypref.delete()
+            return Response({"Success!":"Subcategory Preference deleted successfully"})
+        else:
+            return Response({"Error": "Subcategory Preference does not exist!"})
