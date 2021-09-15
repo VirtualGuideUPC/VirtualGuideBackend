@@ -1,4 +1,5 @@
 import os
+import environ
 
 """
 Django settings for vgbknd project.
@@ -18,18 +19,21 @@ import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#Initialize environment variables
+
+env= environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i!q!34yza+u=$j=e*&m^@2ovi6068@o!1bzrqe2@i_p(symnhh'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -87,22 +91,13 @@ WSGI_APPLICATION = 'vgbknd.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vgdatabase',
-        'USER': 'admin',
-        'PASSWORD': 'virtualguide99',
-        'HOST': 'vguidedb.cluster-c5oemcp7pfcq.us-east-1.rds.amazonaws.com',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
         'PORT': ''
     }
 }
-# 'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'heroku_4496d54c881cf2b',
-#         'USER': 'bf410fde56cda5',
-#         'PASSWORD': '1318e9d1',
-#         'HOST': 'us-cdbr-east-04.cleardb.com',
-#         'PORT': ''
-#     }
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -158,8 +153,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 cloudinary.config(
-    cloud_name="dyifsbjuf",
-    api_key="365448356813786",
-    api_secret="GcTi_HrLO-L1BVR4dPSPqXd646c",
+    cloud_name=env('CLOUDINARY_NAME'),
+    api_key=env('CLOUDINARY_API_KEY'),
+    api_secret=env('CLOUDINARY_API_SECRET'),
     secure=True
 )
+
