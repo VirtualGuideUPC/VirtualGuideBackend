@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from django.urls import path
+from ..users import views
 from ..places.views import TypePlaceListView, CategoryListView, SubCategoryListView
 from .views import AccountListView, ListPreferedSubCategory, ListPreferredTypePlacesByUser, ListPreferredSubCategoriesByUser, \
     ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourite, AddCategoryPreference, \
     AddTypePlacePreference, ListFavourite, ListFavouriteDepartment, ListPreference, RegisterView, LoginView, \
     UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser, CreateMessage, MessageListView, \
-    UpdateMessage, MessageById, MessageByUserId, UpdateSubcategoryPreference, AddSubCategoryPreference, SubCategoryPrefById
+    UpdateMessage, MessageById, MessageByUserId, UpdateSubcategoryPreference, AddSubCategoryPreference, SubCategoryPrefById, \
+    ChatbotPreferenceMessage
 
 urlpatterns = [
     path('users/register/', RegisterView.as_view()),
@@ -38,5 +40,6 @@ urlpatterns = [
     path('users/message/update/', UpdateMessage.as_view()),
     path('users/getAllMessages/', MessageListView.as_view()),
     path('users/message/id/<str:pk>',MessageById.as_view()),
-    path('users/message/userid/<str:pk>', MessageByUserId.as_view())
+    path('users/message/userid/<str:pk>', MessageByUserId.as_view()),
+    path('users/message/chatbot/', ChatbotPreferenceMessage.as_view())
 ]

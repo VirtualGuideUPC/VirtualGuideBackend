@@ -10,7 +10,14 @@ from .models import *
 import jwt   
 import datetime
 from rest_framework import status
-
+import requests
+import time
+import json
+from rest_framework import status
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 # Create your views here.
 
 class RegisterView(APIView):
@@ -58,6 +65,43 @@ class ListPreferedTypePlace(APIView):
         preferedTypePlaces= PreferenceTypePlace.objects.all()
         serializer=PreferenceTypePlaceSerializer(preferedTypePlaces, many=True)
         return Response(serializer.data)
+
+class ChatbotPreferenceMessage(APIView):
+    def post(self, request):
+
+        #create the message, store it in db
+        request.data['is_user']=True
+        msgserializer = MessageSerializer(data=request.data)
+        msgserializer.is_valid(raise_exception=True)
+        msgserializer.save()
+        
+        #call the chatbot service
+        if(msgserializer.is_valid()):
+
+            url = "http://ec2-54-235-10-1.compute-1.amazonaws.com/prediction"
+            payload = json.dumps({
+                "msg": request.data['text'],
+            })
+            headers = {
+                'Content-Type': 'application/json',
+            }
+            response = requests.request("POST", url, headers=headers, data=payload)
+            botResponseMsg=response.json()['msg']
+
+            #save chatbot message to db
+            request.data['is_user']=False
+            request.data['text']=botResponseMsg
+            msgserializer= MessageSerializer(data=request.data)
+            msgserializer.is_valid(raise_exception=True)
+            msgserializer.save()
+            #show chatbot message
+            return Response(msgserializer.data)
+        else:
+            response=Response()
+            response.data = {
+                'message': 'error'
+            }
+            return response
 
 class ListPreferedCategory(APIView): 
 
@@ -502,8 +546,6 @@ class UpdateMessage(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 class MessageListView(APIView):
     def get(self, request):
