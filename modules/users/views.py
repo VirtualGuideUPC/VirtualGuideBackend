@@ -98,8 +98,8 @@ class ChatbotPreferenceMessage(APIView):
             #show chatbot and human message
             combinedResponse=Response()
             combinedResponse.data = {
-            'human message': msgserializer.data,
-            'bot response':  botmsgserializer.data
+            'human_message': msgserializer.data,
+            'bot_response':  botmsgserializer.data
             }
             return combinedResponse
         else:
