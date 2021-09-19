@@ -91,11 +91,17 @@ class ChatbotPreferenceMessage(APIView):
             #save chatbot message to db
             request.data['is_user']=False
             request.data['text']=botResponseMsg
-            msgserializer= MessageSerializer(data=request.data)
-            msgserializer.is_valid(raise_exception=True)
-            msgserializer.save()
-            #show chatbot message
-            return Response(msgserializer.data)
+            botmsgserializer= MessageSerializer(data=request.data)
+            botmsgserializer.is_valid(raise_exception=True)
+            botmsgserializer.save()
+
+            #show chatbot and human message
+            combinedResponse=Response()
+            combinedResponse.data = {
+            'human message': msgserializer.data,
+            'bot response':  botmsgserializer.data
+            }
+            return combinedResponse
         else:
             response=Response()
             response.data = {
