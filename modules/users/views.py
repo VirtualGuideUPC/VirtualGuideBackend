@@ -559,13 +559,13 @@ class MessageListView(APIView):
         messages= Message.objects.all()
         serializer=MessageSerializer(messages, many=True)
 
-        now=datetime.datetime.now().strftime('%Y-%m-%d')
-        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        for dict in serializer.data:
-            if dict['date']==now:
-                dict['date']='Today'
-            elif dict['date']==yesterday:
-                dict['date']='Yesterday'
+        # now=datetime.datetime.now().strftime('%Y-%m-%d')
+        # yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        # for dict in serializer.data:
+        #     if dict['date']==now:
+        #         dict['date']='Today'
+        #     elif dict['date']==yesterday:
+        #         dict['date']='Yesterday'
         return Response(serializer.data)
 
 class MessageById(APIView):
@@ -573,13 +573,13 @@ class MessageById(APIView):
         messages=Message.objects.filter(pk=pk)
         serializer=MessageSerializer(messages,many=True)
 
-        now=datetime.datetime.now().strftime('%Y-%m-%d')
-        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        for dict in serializer.data:
-            if dict['date']==now:
-                dict['date']='Today'
-            elif dict['date']==yesterday:
-                dict['date']='Yesterday'
+        # now=datetime.datetime.now().strftime('%Y-%m-%d')
+        # yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        # for dict in serializer.data:
+        #     if dict['date']==now:
+        #         dict['date']='Today'
+        #     elif dict['date']==yesterday:
+        #         dict['date']='Yesterday'
 
         return Response(serializer.data)
     
@@ -599,13 +599,13 @@ class MessageByUserId(APIView):
         messages=Message.objects.filter(user=pk)
         serializer=MessageSerializer(messages,many=True)
 
-        now=datetime.datetime.now().strftime('%Y-%m-%d')
-        yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        for dict in serializer.data:
-            if dict['date']==now:
-                dict['date']='Today'
-            elif dict['date']==yesterday:
-                dict['date']='Yesterday'
+        # now=datetime.datetime.now().strftime('%Y-%m-%d')
+        # yesterday=(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        # for dict in serializer.data:
+        #     if dict['date']==now:
+        #         dict['date']='Today'
+        #     elif dict['date']==yesterday:
+        #         dict['date']='Yesterday'
 
         return Response(serializer.data)
 
