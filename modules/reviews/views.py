@@ -57,15 +57,15 @@ class ReviewTouristicPlaceListView(APIView):
 
 class ReviewUserListView(APIView):
     def get(self,request,pk):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
 
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+        # if not token:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+        # try:
+        #     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
         reviews = Review.objects.filter(user=pk)
 

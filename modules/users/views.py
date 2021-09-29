@@ -203,12 +203,14 @@ class LogoutView(APIView):
         }
         return response
 
+
 class AddFavourite(APIView):
     def post(self, request):
         serializer = FavouriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data) 
+
 
 class ListPreferredTypePlacesByUser(APIView): 
     def get(self, request, pk):
@@ -274,15 +276,15 @@ class ListPreferredCategoriesByUser(APIView):
 
 class ListPreferredSubCategoriesByUser(APIView): 
     def get(self, request, pk):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
 
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+        # if not token:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+        # try:
+        #     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
         preferredSubCategories= PreferenceSubCategory.objects.filter(user=pk)
         subcatserializer = PreferenceSubCategorySerializer(preferredSubCategories, many=True)
