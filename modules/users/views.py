@@ -155,9 +155,9 @@ class LoginView(APIView):
         if user is None:
             raise AuthenticationFailed('User not found!')
 
+        #removed expiration field
         payload = {
             'id': user.account_id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.utcnow()
         }
 
