@@ -50,6 +50,11 @@ class TouristicPlace(models.Model):
     status = models.IntegerField(default=1)
     isFavourite = models.BooleanField(default=False)
 
+class FunFact(models.Model):
+    funfact_id = models.AutoField(primary_key=True)
+    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE)
+    fact = models.CharField(max_length=255, default="")
+
 class PictureTouristicPlace(models.Model):
     ptouristicplace_id = models.AutoField(primary_key=True)
     url = models.CharField(max_length=255)

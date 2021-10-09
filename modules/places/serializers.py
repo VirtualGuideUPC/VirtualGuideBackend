@@ -11,6 +11,21 @@ class TouristicPlaceSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class FunFactSerializer(serializers.ModelSerializer):
+    touristic_place_name = serializers.SerializerMethodField('get_touristic_place_name')
+    class Meta: 
+        model = FunFact
+        fields = ['funfact_id','touristic_place','touristic_place_name','fact']
+    
+    def create(self,validated_data): 
+        instance=self.Meta.model(**validated_data)
+        instance.save()
+        return instance
+
+    def get_touristic_place_name(self,obj):
+        tpname=obj.touristic_place.name
+        return tpname
+
 class TPSerializer(serializers.ModelSerializer):
     province_name = serializers.SerializerMethodField('get_province_name')
     picture = serializers.SerializerMethodField('get_picture')

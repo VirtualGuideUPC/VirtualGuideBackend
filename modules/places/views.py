@@ -2,7 +2,7 @@ from .services import PlaceService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer
+from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
 from .models import *
 from modules.reviews.models import Review
 from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerializer
@@ -41,7 +41,6 @@ class CategoryListView(APIView):
 
 class SubCategoryListView(APIView):
     def get(self, request):
-
         subCategories= SubCategory.objects.all()
         serializer=SubCategorySerializer(subCategories, many=True)
         return Response(serializer.data)
@@ -150,6 +149,24 @@ class CreatePictureTouristicPlace(APIView):
         serializer.save()
         return Response(serializer.data)
 
+class CreateFunFact(APIView):
+    def post(self, request):
+        serializer= FunFactSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class ListAllFunFacts(APIView):
+    def get(self,request):
+        funFacts= FunFact.objects.all()
+        serializer=FunFactSerializer(funFacts, many=True)
+        return Response(serializer.data)
+
+class FunFactByTouristicPlaceId(APIView):
+    def get(self,request, pk):
+        funFacts=FunFact.objects.filter(touristic_place=pk)
+        serializer = FunFactSerializer(funFacts, many=True)
+        return Response(serializer.data)
 
 class PictureTouristicPlaceListView(APIView):
     def get(self, request, pk):
