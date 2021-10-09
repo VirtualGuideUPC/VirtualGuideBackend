@@ -102,3 +102,10 @@ class TotalReviewSerializerUser(serializers.ModelSerializer):
     def get_touristic_place_id(self,obj):
         return obj.touristic_place.touristicplace_id
 
+
+class ReviewSerializerSR(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ['ranking', 'touristic_place', 'user']
+
