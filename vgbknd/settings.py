@@ -95,7 +95,10 @@ DATABASES = {
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST'),
-        'PORT': ''
+        'PORT': '',
+        'OPTIONS': {
+          'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 # Password validation
