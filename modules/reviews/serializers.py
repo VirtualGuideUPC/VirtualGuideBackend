@@ -3,27 +3,7 @@ from rest_framework import serializers
 from .models import *
 from modules.users.models import Account
 
-class ReviewSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Review
-        fields = ['review_id', 'comment', 'comment_ranking', 'date', 'ranking', 'touristic_place', 'user']
-    
-    
-    def create(self, validated_data):
-        instance = self.Meta.model(**validated_data)
-        instance.save()
-        return instance
-
-class ReviewTpSerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField('get_user_name')
-
-    class Meta:
-        model = Review
-        fields = ['review_id', 'user_name', 'date', 'comment', 'ranking'] 
-
-    def get_user_name(self, obj):
-        return obj.user.name
 
 class PictureReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,6 +17,37 @@ class PictureReviewSerializer(serializers.ModelSerializer):
         instance.url = res['secure_url']
         instance.save()
         return instance
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user_name=serializers.SerializerMethodField('get_user_name')
+    user_picture=serializers.SerializerMethodField('get_user_picture')
+    images = PictureReviewSerializer(many=True)  
+
+    class Meta:
+        model = Review
+        fields = ['review_id', 'comment', 'comment_ranking', 'date', 'ranking', 'touristic_place', 'user_name', 'user_picture','images']
+    
+    
+    def create(self, validated_data):
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
+
+    def get_user_name(self, obj):
+        return obj.user.name
+
+    def get_user_picture(self, obj):
+        return obj.user.user_picture
+
+class ReviewTpSerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField('get_user_name')
+
+    class Meta:
+        model = Review
+        fields = ['review_id', 'user_name', 'date', 'comment', 'ranking'] 
+
+    def get_user_name(self, obj):
+        return obj.user.name
 
 class PictureReviewTpSerializer(serializers.ModelSerializer):
     class Meta:

@@ -2,7 +2,7 @@ from .services import PlaceService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
+from .serializers import TPSerializer, CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
 from .models import *
 from modules.reviews.models import Review
 from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerializer
@@ -64,6 +64,44 @@ class TouristicPlaceListView(APIView):
         touristicPlaces = TouristicPlace.objects.all()
         serializer = TouristicPlaceSerializer(touristicPlaces, many=True)
         return Response(serializer.data)
+
+class FullTouristicPlaceListView(APIView):
+    def get(self, request):
+        userId=request.data['user_id']
+        touristicPlaces = TouristicPlace.objects.all()
+        serializer = TPSerializer(touristicPlaces, many=True)
+
+        # for place in serializer.data:
+        #     lat = float(place['latitude'])
+        #     lon = float(place['longitude'])
+
+        #     placeService = PlaceService(lat, lon) 
+        #     tplist = placeService.tpnearbylist(touristicPlaces)
+        #     tserializer = NearbyPlaceSerializer(tplist, many=True)
+        #     userId=place.data['user_id']
+
+        #     url="http://ec2-3-95-56-39.compute-1.amazonaws.com/simusrec"
+        #     payload = json.dumps({
+        #         "user_id": userId
+        #     })
+        #     headers = {
+        #         'Content-Type': 'application/json'
+        #     }
+        
+        #     response = requests.request("GET", url, headers=headers, data=payload)
+        #     recommendations=response.json()['recommendations']
+        #     # recommendations.append(75)
+
+        #     for place in tserializer.data:           
+        #         if place['touristicplace_id'] in recommendations:
+        #             place['isFavourite']=True
+        #         else:
+        #             place['isFavourite']=False
+        #     place.update(tserializer.data)
+            
+
+        return Response(serializer.data)
+
 
 class TouristicPlaceById(APIView):
     def get(self, request, pk):

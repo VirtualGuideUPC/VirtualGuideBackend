@@ -1,4 +1,10 @@
+import json
+import requests
 from rest_framework import serializers
+from rest_framework.relations import StringRelatedField
+from modules.places.services import PlaceService
+
+from modules.reviews.serializers import ReviewSerializer
 from .models import *
 
 class TouristicPlaceSerializer(serializers.ModelSerializer):
@@ -26,26 +32,6 @@ class FunFactSerializer(serializers.ModelSerializer):
         tpname=obj.touristic_place.name
         return tpname
 
-class TPSerializer(serializers.ModelSerializer):
-    province_name = serializers.SerializerMethodField('get_province_name')
-    picture = serializers.SerializerMethodField('get_picture')
-    class Meta:
-        model = TouristicPlace
-        fields = ['touristicplace_id', 'name', 'short_info', 'latitude', 'longitude', 'picture','tp_range', 'province_name', 'avg_ranking', 'number_comments', 'isFavourite'] 
-    
-    def create(self, validated_data):
-        instance = self.Meta.model(**validated_data)
-        instance.save()
-        return instance
-
-    def get_province_name(self, obj):
-        pname = obj.province.name
-        return pname
-    
-    def get_picture(self, obj):
-        tp_id = obj.touristicplace_id
-        tppicture = PictureTouristicPlace.objects.filter(touristic_place=tp_id).values_list('url', flat=True).first()
-        return str(tppicture)  
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -84,11 +70,6 @@ class PictureTouristicPlaceSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class PictureTpUrlSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PictureTouristicPlace
-        fields = ['url'] 
-
 class TouristicPlaceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TouristicPlaceCategory
@@ -98,6 +79,34 @@ class TouristicPlaceCategorySerializer(serializers.ModelSerializer):
         instance = self.Meta.model(**validated_data)
         instance.save()
         return instance
+
+
+class TPSerializer(serializers.ModelSerializer):
+    province_name = serializers.SerializerMethodField('get_province_name')
+    pictures = PictureTouristicPlaceSerializer(many=True)
+    categories = TouristicPlaceCategorySerializer(many=True)    
+    funfacts = serializers.SlugRelatedField(many=True, slug_field='fact', read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True, source='ratings')
+
+    class Meta:
+        model = TouristicPlace
+        fields = ['touristicplace_id', 'name', 'short_info', 'latitude', 'longitude', 'pictures','categories','tp_range','funfacts', 'reviews','province_name', 'avg_ranking', 'number_comments', 'isFavourite'] 
+
+    def create(self, validated_data):
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
+
+    def get_province_name(self, obj):
+        pname = obj.province.name
+        return pname
+
+        
+class PictureTpUrlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PictureTouristicPlace
+        fields = ['url'] 
+
 
 
 class CategoryTpSerializer(serializers.ModelSerializer):

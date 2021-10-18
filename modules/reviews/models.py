@@ -18,5 +18,5 @@ class PictureReview(models.Model):
     image = models.ImageField('image')
     url = models.CharField(max_length=300)
     number = models.IntegerField()
-    review = models.ForeignKey(Review,null=False, blank=False, default=1, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review,null=False, blank=False, default=1, on_delete=models.CASCADE, related_name = "images")
 
