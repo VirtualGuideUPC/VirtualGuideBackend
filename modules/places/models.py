@@ -37,7 +37,7 @@ class TouristicPlace(models.Model):
     price = models.FloatField()
     schedule_info = models.CharField(max_length=255)
     historic_info = models.CharField(max_length=255)
-    long_info = models.CharField(max_length=255)
+    long_info = models.TextField()
     short_info = models.CharField(max_length=255)
     activities_info = models.CharField(max_length=255)
     latitude = models.CharField(max_length=20)

@@ -8,6 +8,8 @@ from modules.reviews.models import Review
 from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerializer
 from django.db.models import Avg
 import jwt
+import requests
+import json
 
 # Create your views here.
 
@@ -37,6 +39,8 @@ class CategoryListView(APIView):
 
         categories= Category.objects.all()
         serializer=CategorySerializer(categories, many=True)
+
+
         return Response(serializer.data)
 
 class SubCategoryListView(APIView):
@@ -192,9 +196,26 @@ class NearbyPlaces(APIView):
         lon = request.data['longitude']
 
         placeService = PlaceService(lat, lon) 
-        
         tplist = placeService.tpnearbylist(touristicPlaces)
-        
         serializer = NearbyPlaceSerializer(tplist, many=True)
-        
+        userId=request.data['user_id']
+
+        url="http://ec2-3-95-56-39.compute-1.amazonaws.com/simusrec"
+        payload = json.dumps({
+            "user_id": userId
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+       
+        response = requests.request("GET", url, headers=headers, data=payload)
+        recommendations=response.json()['recommendations']
+        # recommendations.append(75)
+
+        for place in serializer.data:           
+            if place['touristicplace_id'] in recommendations:
+                place['isFavourite']=True
+            else:
+                place['isFavourite']=False
+
         return Response(serializer.data)
