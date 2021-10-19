@@ -90,7 +90,7 @@ class TPSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TouristicPlace
-        fields = ['touristicplace_id', 'name', 'short_info', 'latitude', 'longitude', 'pictures','categories','tp_range','funfacts', 'reviews','province_name', 'avg_ranking', 'number_comments', 'isFavourite'] 
+        fields = ['touristicplace_id', 'name', 'short_info','long_info', 'latitude', 'longitude','schedule_info' ,'pictures','categories','tp_range','funfacts', 'reviews','province_name', 'avg_ranking', 'number_comments', 'isFavourite'] 
 
     def create(self, validated_data):
         instance = self.Meta.model(**validated_data)
