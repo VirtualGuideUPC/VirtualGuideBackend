@@ -52,17 +52,18 @@ class TouristicPlace(models.Model):
 
 class FunFact(models.Model):
     funfact_id = models.AutoField(primary_key=True)
-    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE, related_name="funfacts")
+    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE)
     fact = models.CharField(max_length=255, default="")
 
 class PictureTouristicPlace(models.Model):
     ptouristicplace_id = models.AutoField(primary_key=True)
     url = models.CharField(max_length=255)
     number = models.IntegerField()
-    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE, related_name="pictures")
+    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE)
+
 
 class TouristicPlaceCategory(models.Model):
     tp_category_id = models.AutoField(primary_key=True)
     category = models.ForeignKey(Category, null=False, blank=False, default=1, on_delete=models.CASCADE)
-    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE, related_name="categories")
+    touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE)
 

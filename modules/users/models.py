@@ -12,8 +12,7 @@ class Country(models.Model):
 class Account(AbstractUser):
     account_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=70)
-    last_name = models.CharField(max_length=70)
-    user_picture= models.CharField(max_length=255, default="")
+    last_name = models.CharField(max_length=70)  
     email = models.CharField(max_length=70, unique=True, default="")
     password = models.CharField(max_length=255)
     token_notification = models.CharField(max_length=70, default="")
