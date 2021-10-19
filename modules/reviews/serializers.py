@@ -37,7 +37,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         return obj.user.name
 
     def get_user_picture(self, obj):
-        return obj.user.icon
+        return obj.user.user_picture
 
 class ReviewTpSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField('get_user_name')
