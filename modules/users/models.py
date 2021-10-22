@@ -13,7 +13,6 @@ class Account(AbstractUser):
     account_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)
-    user_picture= models.CharField(max_length=255, default="")
     email = models.CharField(max_length=70, unique=True, default="")
     password = models.CharField(max_length=255)
     token_notification = models.CharField(max_length=70, default="")
@@ -39,8 +38,11 @@ class Message(models.Model):
 class Favourite(models.Model):
     favourite_id = models.AutoField(primary_key=True)
     touristic_place = models.ForeignKey(TouristicPlace, null=False, blank=False, default=1, on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, null=False, blank=False, default=1, on_delete=models.CASCADE)    
-
+    user = models.ForeignKey(Account, null=False, blank=False, default=1, on_delete=models.CASCADE) 
+    
+    class Meta:
+        unique_together = ('touristic_place','user')
+        
 class PreferenceCategory(models.Model):
     preference_category_id = models.AutoField(primary_key=True)
     category = models.ForeignKey(Category, null=False, blank=False, default=1, on_delete=models.CASCADE)    

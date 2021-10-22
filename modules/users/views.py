@@ -58,7 +58,13 @@ class RegisterView(APIView):
         trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         return Response(serializer.data) 
-        
+
+class ListUsers(APIView): 
+    def get(self, request):
+        users=Account.objects.all()
+        serializer=AccountSerializer(users,many=True)
+        return Response(serializer.data)
+
 class ListPreferedTypePlace(APIView): 
 
     def get(self, request):
@@ -217,13 +223,26 @@ class LogoutView(APIView):
         return response
 
 
-class AddFavourite(APIView):
+class AddFavourites(APIView):
     def post(self, request):
         serializer = FavouriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data) 
 
+class ListFavourites(APIView):
+    def get(self,request):
+        favourites = Favourite.objects.all()
+        serializer=FavouriteSerializer(favourites, many=True)
+        return Response(serializer.data)
+
+class DeleteFavouriteByPlaceAndUser(APIView):
+    def delete(self, request, user, tp):
+       favourite=Favourite.objects.filter(touristic_place=tp).filter(user=user)
+       if favourite:
+           favourite.delete()
+           return response.JsonResponse({'status':'ok'},status=status.HTTP_200_OK)
+       return response.JsonResponse({'status':'error'},status=status.HTTP_400_BAD_REQUEST)
 
 class ListPreferredTypePlacesByUser(APIView): 
     def get(self, request, pk):

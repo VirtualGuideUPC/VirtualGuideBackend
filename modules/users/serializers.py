@@ -1,15 +1,17 @@
+from django.http.response import JsonResponse
 from rest_framework.validators import UniqueTogetherValidator
 from modules.places.models import Department
 from modules.places.serializers import NearbyPlaceSerializer
-from rest_framework import serializers
+from rest_framework import response, serializers, status
 from .models import *
+import requests
 import cloudinary.uploader
 
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['email', 'password', 'name', 'last_name', 'birthday', 'country','icon']
+        fields = ['account_id','email', 'password', 'name', 'last_name', 'birthday', 'country','icon']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -53,6 +55,17 @@ class FavouriteSerializer(serializers.ModelSerializer):
         instance = self.Meta.model(**validated_data)
         instance.save()
         return instance
+
+class DelFavouriteSerializer(serializers.ModelSerializer):
+
+    def delete(self, user, tp):
+       favourite=Favourite.objects.filter(touristic_place=tp).filter(user=user).first()
+       if favourite:
+           favourite.delete()
+           return JsonResponse({'status':'ok'},status=status.HTTP_200_OK)
+       return JsonResponse({'status':'error'},status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 
 class FavouriteTpSerializer(serializers.ModelSerializer):
