@@ -4,16 +4,25 @@ from .models import *
 from modules.users.models import Account
 
 class ReviewSerializer(serializers.ModelSerializer):
+    user_name=serializers.SerializerMethodField('get_user_name')
+    icon=serializers.SerializerMethodField('get_icon')
+    images = PictureReviewSerializer(many=True)  
 
     class Meta:
         model = Review
-        fields = ['review_id', 'comment', 'comment_ranking', 'date', 'ranking', 'touristic_place', 'user']
+        fields = ['review_id', 'comment', 'comment_ranking', 'date', 'ranking', 'touristic_place', 'user_name', 'icon','images']
     
     
     def create(self, validated_data):
         instance = self.Meta.model(**validated_data)
         instance.save()
         return instance
+
+    def get_user_name(self, obj):
+        return obj.user.name
+
+    def get_icon(self, obj):
+        return obj.user.icon
 
 class ReviewTpSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField('get_user_name')
@@ -46,11 +55,12 @@ class PictureReviewTpSerializer(serializers.ModelSerializer):
 
 class TotalReviewSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField('get_images')
+    user_picture=serializers.SerializerMethodField('get_user_picture')
     user_name = serializers.SerializerMethodField('get_user_name')
 
     class Meta:
         model = Review
-        fields = ['review_id', 'user_name', 'date', 'comment', 'ranking', 'images']
+        fields = ['review_id', 'user_name','user_picture', 'date', 'comment', 'ranking', 'images']
 
     def get_images(self,obj):
         if PictureReview.objects.filter(review=obj.review_id).exists():
@@ -63,6 +73,9 @@ class TotalReviewSerializer(serializers.ModelSerializer):
     def get_user_name(self, obj):
         return obj.user.name
 
+    def get_user_picture(self,obj):
+        return obj.user.icon
+
 class TotalReviewSerializerUser(serializers.ModelSerializer):
     images = serializers.SerializerMethodField('get_images')
     user_name = serializers.SerializerMethodField('get_user_name')
@@ -71,13 +84,9 @@ class TotalReviewSerializerUser(serializers.ModelSerializer):
     touristic_place_id=serializers.SerializerMethodField('get_touristic_place_id')
     province = serializers.SerializerMethodField('get_province')
 
-
-
     class Meta:
         model = Review
         fields = ['review_id','user_id', 'user_name', 'date', 'comment', 'ranking', 'images','touristic_place_id','touristic_place_name', 'province']
-
-
 
     def get_images(self,obj):
         if PictureReview.objects.filter(review=obj.review_id).exists():
@@ -101,6 +110,7 @@ class TotalReviewSerializerUser(serializers.ModelSerializer):
 
     def get_touristic_place_id(self,obj):
         return obj.touristic_place.touristicplace_id
+
 
 
 class ReviewSerializerSR(serializers.ModelSerializer):

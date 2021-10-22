@@ -74,6 +74,7 @@ class TouristicPlaceById(APIView):
             raise AuthenticationFailed('Unauthenticated!')
 
         touristicPlace = TouristicPlace.objects.filter(touristicplace_id=pk).first()
+        serializer = TPSerializer(touristicPlace)
         
         tppictures = PictureTouristicPlace.objects.filter(touristic_place=pk)
         picturesSerializer = PictureTouristicPlaceSerializer(tppictures, many=True)
@@ -88,6 +89,8 @@ class TouristicPlaceById(APIView):
         
         review_avg = Review.objects.filter(touristic_place=pk).aggregate(Avg('ranking'))
         
+        funFacts= FunFact.objects.filter(touristic_place=pk)
+
         fin_avg = review_avg.get('ranking__avg')
 
         print('review_avg: ', review_avg)
@@ -95,15 +98,14 @@ class TouristicPlaceById(APIView):
         #reviewsSerializer = ReviewTpSerializer(reviews, many=True)
         reviewsSerializer = TotalReviewSerializer(reviews, many=True)
 
+        funFactsSerializer= FunFactSerializer(funFacts, many=True)
+
         response = Response()
 
         simExp1 = TouristicPlace.objects.filter(type_place=touristicPlace.type_place).exclude(touristicplace_id=pk)
         categories = TouristicPlaceCategory.objects.filter(touristic_place=pk).values_list('category', flat=True)
-        
 
         cat_list = []
-
-
         
         for c in categories:
             cat_list.append(c)
@@ -119,22 +121,32 @@ class TouristicPlaceById(APIView):
 
         simExp2 = TouristicPlace.objects.filter(touristicplace_id__in=setps).exclude(touristicplace_id=pk)
 
-
         simExpFinal = simExp1 | simExp2
 
-
         simExpSer = NearbyPlaceSerializer(simExpFinal, many=True)
+
+        print(type(funFactsSerializer.data))
+
+        funfactstr=[]
+        for funfact in funFactsSerializer.data:
+            funfactstr.append(funfact['fact'])
+
+        print((funFactsSerializer.data))
 
         response.data = {
             'id': touristicPlace.touristicplace_id,
             'pictures': picturesSerializer.data,
             'name': touristicPlace.name,
+            'short_info':touristicPlace.short_info,
             'long_info': touristicPlace.long_info,
             'categories': categorystpSerializer.data,
             'latitude': touristicPlace.latitude,
             'longitude': touristicPlace.longitude,
+            'province':touristicPlace.province.name,
             'avg_ranking': fin_avg,
             'number_comments': review_count,
+            'schedule_info':touristicPlace.schedule_info,
+            'fun_facts':funfactstr,
             'reviews': reviewsSerializer.data,
             'similarExperiences': simExpSer.data,
             'isFavourite': touristicPlace.isFavourite
@@ -196,5 +208,29 @@ class NearbyPlaces(APIView):
         tplist = placeService.tpnearbylist(touristicPlaces)
         
         serializer = NearbyPlaceSerializer(tplist, many=True)
+        userId=request.data['user_id']
+
+        url="http://ec2-3-95-56-39.compute-1.amazonaws.com/simusrec"
+        payload = json.dumps({
+            "user_id": userId
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+       
+        response = requests.request("GET", url, headers=headers, data=payload)
         
+        try:
+            recommendations=response.json()['recommendations']
+        except:
+            recommendations=[]
+
+        # recommendations.append(75)
+
+        for place in serializer.data:           
+            if place['touristicplace_id'] in recommendations:
+              place.update({"isRecommended":True})
+            else:
+              place.update({"isRecommended":False})
+
         return Response(serializer.data)

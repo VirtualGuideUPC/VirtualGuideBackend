@@ -3,11 +3,11 @@ from django.urls import path
 from ..users import views
 from ..places.views import TypePlaceListView, CategoryListView, SubCategoryListView
 from .views import AccountListView, ListPreferedSubCategory, ListPreferredTypePlacesByUser, ListPreferredSubCategoriesByUser, \
-    ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourite, AddCategoryPreference, \
+    ListPreferredCategoriesByUser, ListPreferedCategory, ListPreferedTypePlace, AddFavourites, AddCategoryPreference, \
     AddTypePlacePreference, ListFavourite, ListFavouriteDepartment, ListPreference, RegisterView, LoginView, \
     UpdateCategoryPreference, UpdateTypePlacePreference, UserView, LogoutView, UpdateUser, CreateMessage, MessageListView, \
     UpdateMessage, MessageById, MessageByUserId, UpdateSubcategoryPreference, AddSubCategoryPreference, SubCategoryPrefById, \
-    ChatbotPreferenceMessage
+    ChatbotPreferenceMessage, DeleteFavouriteByPlaceAndUser, ListFavourites
 
 urlpatterns = [
     path('users/register/', RegisterView.as_view()),
@@ -15,7 +15,9 @@ urlpatterns = [
     path('users/user/', UserView.as_view()),
     path('users/user/update/', UpdateUser.as_view()),
     path('users/logout/', LogoutView.as_view()),
-    path('users/favourite/create/', AddFavourite.as_view()),
+    path('users/favourite/create/', AddFavourites.as_view()),
+    path('users/favourite/',ListFavourites.as_view()),
+    path('users/favourite/<str:user>/<str:tp>/', DeleteFavouriteByPlaceAndUser.as_view()),
     path('users/preference/category/create/', AddCategoryPreference.as_view()),
     path('users/preference/typeplace/create/', AddTypePlacePreference.as_view()),
     path('users/preference/subcategory/create/', AddSubCategoryPreference.as_view()),

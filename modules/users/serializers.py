@@ -1,15 +1,17 @@
+from django.http.response import JsonResponse
 from rest_framework.validators import UniqueTogetherValidator
 from modules.places.models import Department
 from modules.places.serializers import NearbyPlaceSerializer
-from rest_framework import serializers
+from rest_framework import response, serializers, status
 from .models import *
+import requests
 import cloudinary.uploader
 
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['email', 'password', 'name', 'last_name', 'birthday', 'country','icon']
+        fields = ['account_id','email', 'password', 'name', 'last_name', 'birthday', 'country','icon']
         extra_kwargs = {
             'password': {'write_only': True}
         }
