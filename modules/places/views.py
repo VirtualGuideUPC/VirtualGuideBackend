@@ -11,7 +11,7 @@ import jwt
 import requests
 import json
 
-# Create your views here.
+# Create your views here
 
 class CreateTouristicPlace(APIView):
     def post(self, request):
