@@ -2,13 +2,14 @@ from .services import PlaceService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
+from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TPSerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
 from .models import *
 from modules.reviews.models import Review
 from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerializer
 from django.db.models import Avg
 import jwt
-
+import requests
+import json
 # Create your views here
 
 class CreateTouristicPlace(APIView):
