@@ -9,7 +9,7 @@ from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerialize
 from django.db.models import Avg
 import jwt
 
-# Create your views here.
+# Create your views here
 
 class CreateTouristicPlace(APIView):
     def post(self, request):
