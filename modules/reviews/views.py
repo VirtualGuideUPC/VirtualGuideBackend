@@ -1,3 +1,4 @@
+import requests
 from modules.places.serializers import TouristicPlaceSerializer
 from modules.places.models import TouristicPlace
 from rest_framework.views import APIView
@@ -35,6 +36,10 @@ class CreateReview(APIView):
                 serializer_picture.is_valid(raise_exception=True)
                 serializer_picture.save()
 
+        
+        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        requests.request("GET", trainingUrl)
+        
         return Response(serializer.data)
 
 

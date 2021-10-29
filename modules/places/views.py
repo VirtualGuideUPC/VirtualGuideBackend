@@ -4,7 +4,7 @@ from .services import PlaceService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TPSerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
+from .serializers import TPSerializer, CategoryTpSerializer, CategorySerializer, SubCategorySerializer, TypePlaceSerializer, NearbyPlaceSerializer, TouristicPlaceCategorySerializer, TouristicPlaceSerializer, PictureTouristicPlaceSerializer, FunFactSerializer
 from .models import *
 from modules.reviews.models import Review
 from modules.reviews.serializers import ReviewTpSerializer, TotalReviewSerializer
@@ -12,6 +12,7 @@ from django.db.models import Avg
 import jwt
 import requests
 import json
+
 # Create your views here
 
 class CreateTouristicPlace(APIView):
@@ -40,6 +41,8 @@ class CategoryListView(APIView):
 
         categories= Category.objects.all()
         serializer=CategorySerializer(categories, many=True)
+
+
         return Response(serializer.data)
 
 class SubCategoryListView(APIView):
@@ -128,13 +131,11 @@ class TouristicPlaceById(APIView):
 
         simExpSer = NearbyPlaceSerializer(simExpFinal, many=True)
 
-        print(type(funFactsSerializer.data))
 
         funfactstr=[]
         for funfact in funFactsSerializer.data:
             funfactstr.append(funfact['fact'])
 
-        print((funFactsSerializer.data))
 
         response.data = {
             'id': touristicPlace.touristicplace_id,
@@ -207,9 +208,7 @@ class NearbyPlaces(APIView):
         lon = request.data['longitude']
 
         placeService = PlaceService(lat, lon) 
-        
         tplist = placeService.tpnearbylist(touristicPlaces)
-        
         serializer = NearbyPlaceSerializer(tplist, many=True)
         userId=request.data['user_id']
 

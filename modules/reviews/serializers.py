@@ -4,6 +4,7 @@ from .models import *
 from modules.users.models import Account
 
 
+
 class PictureReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureReview
@@ -16,7 +17,7 @@ class PictureReviewSerializer(serializers.ModelSerializer):
         instance.url = res['secure_url']
         instance.save()
         return instance
-        
+
 class ReviewSerializer(serializers.ModelSerializer):
     user_name=serializers.SerializerMethodField('get_user_name')
     icon=serializers.SerializerMethodField('get_icon')
@@ -47,8 +48,6 @@ class ReviewTpSerializer(serializers.ModelSerializer):
 
     def get_user_name(self, obj):
         return obj.user.name
-
-
 
 class PictureReviewTpSerializer(serializers.ModelSerializer):
     class Meta:
