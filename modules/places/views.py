@@ -1,3 +1,5 @@
+from modules.users.models import Favourite
+from modules.users.serializers import FavouriteSerializer
 from .services import PlaceService
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -228,7 +230,13 @@ class NearbyPlaces(APIView):
 
         # recommendations.append(75)
 
-        for place in serializer.data:           
+        for place in serializer.data:
+            favourites=Favourite.objects.filter(touristic_place=place['touristicplace_id'],user=userId)
+            if favourites:
+                try:
+                    place['isFavourite']=True
+                except:
+                    print("Error, no existe el campo isFavourite")
             if place['touristicplace_id'] in recommendations:
               place.update({"isRecommended":True})
             else:
