@@ -55,7 +55,7 @@ class RegisterView(APIView):
                 subcatserializer.is_valid(raise_exception=True)
                 subcatserializer.save()      
 
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         return Response(serializer.data) 
 
@@ -138,7 +138,7 @@ class AddCategoryPreference(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
 
         return Response(serializer.data)
@@ -149,7 +149,7 @@ class AddTypePlacePreference(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         
         return Response(serializer.data)
@@ -160,7 +160,7 @@ class AddSubCategoryPreference(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
 
         return Response(serializer.data)
@@ -489,7 +489,7 @@ class UpdateCategoryPreference(APIView):
         serializer = PreferenceCategorySerializer(prtypeplace, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+            trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
             requests.request("GET", trainingUrl)
             return Response(serializer.data)
         
@@ -512,7 +512,7 @@ class UpdateTypePlacePreference(APIView):
         serializer = PreferenceTypePlaceSerializer(prtypeplace, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+            trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
             requests.request("GET", trainingUrl)
             return Response(serializer.data)
 
@@ -536,7 +536,7 @@ class UpdateSubcategoryPreference(APIView):
         serializer = PreferenceSubCategorySerializer(prsubcategory, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+            trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
             requests.request("GET", trainingUrl)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
