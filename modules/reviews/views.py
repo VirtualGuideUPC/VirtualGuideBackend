@@ -37,7 +37,7 @@ class CreateReview(APIView):
                 serializer_picture.save()
 
         
-        trainingUrl="http://ec2-34-234-66-195.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         
         return Response(serializer.data)
