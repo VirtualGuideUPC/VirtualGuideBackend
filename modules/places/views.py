@@ -70,7 +70,7 @@ class TouristicPlaceListView(APIView):
 class TouristicPlaceById(APIView):
     def get(self, request, pk):
         token = request.COOKIES.get('jwt')
-
+        
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
 
@@ -88,7 +88,8 @@ class TouristicPlaceById(APIView):
         categorystp =  TouristicPlaceCategory.objects.filter(touristic_place=pk)
         categorystpSerializer = CategoryTpSerializer(categorystp, many=True)
 
-        
+
+
         reviews = Review.objects.filter(touristic_place=pk)
 
         review_count = Review.objects.filter(touristic_place=pk).count()
@@ -131,11 +132,23 @@ class TouristicPlaceById(APIView):
 
         simExpSer = NearbyPlaceSerializer(simExpFinal, many=True)
 
+        print(type(funFactsSerializer.data))
 
         funfactstr=[]
         for funfact in funFactsSerializer.data:
             funfactstr.append(funfact['fact'])
 
+        try:
+            userId=request.data['user_id']
+        except:
+            userId=0
+
+        favourites=Favourite.objects.filter(touristic_place=touristicPlace.touristicplace_id,user=userId)
+        if favourites:
+            try:
+                touristicPlace.isFavourite=True
+            except:
+                print("Error, no existe el campo isFavourite")
 
         response.data = {
             'id': touristicPlace.touristicplace_id,
