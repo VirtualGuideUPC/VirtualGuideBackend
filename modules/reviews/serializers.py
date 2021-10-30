@@ -39,6 +39,17 @@ class ReviewSerializer(serializers.ModelSerializer):
     def get_icon(self, obj):
         return obj.user.icon
 
+
+class SOSReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Review
+        fields = ['review_id','comment','comment_ranking','date','ranking','touristic_place','user']
+    
+    def create(self,validated_data):
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
+
 class ReviewTpSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField('get_user_name')
 
@@ -62,7 +73,7 @@ class TotalReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['review_id', 'user_name','user_picture', 'date', 'comment', 'ranking', 'images']
+        fields = ['review_id', 'user_name','user_picture', 'date', 'comment', 'ranking','images']
 
     def get_images(self,obj):
         if PictureReview.objects.filter(review=obj.review_id).exists():

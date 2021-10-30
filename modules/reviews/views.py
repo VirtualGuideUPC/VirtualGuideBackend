@@ -2,7 +2,7 @@ import requests
 from modules.places.serializers import TouristicPlaceSerializer
 from modules.places.models import TouristicPlace
 from rest_framework.views import APIView
-from .serializers import ReviewSerializer, PictureReviewSerializer, TotalReviewSerializer, TotalReviewSerializerUser, \
+from .serializers import ReviewSerializer, PictureReviewSerializer, SOSReviewSerializer, TotalReviewSerializer, TotalReviewSerializerUser, \
     ReviewSerializerSR
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
@@ -35,12 +35,41 @@ class CreateReview(APIView):
                 serializer_picture = PictureReviewSerializer(data=aux)
                 serializer_picture.is_valid(raise_exception=True)
                 serializer_picture.save()
-
-        
         trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
-        
         return Response(serializer.data)
+
+class SOSCreateReview(APIView):
+    def post(self, request):
+        serializer=SOSReviewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        review_id = serializer.data['review_id']
+        
+        if 'image' not in request.FILES:
+            images = []
+        else:
+            images = dict(request.FILES.lists())['image']
+
+        arr_img = []
+        for img in images:
+            data = img.file
+            arr_img.append(data)
+
+        number_images = len(arr_img)
+        if len(arr_img) > 0:
+            for n in range(0, number_images):
+                aux = dict({"image": images[n], "number": n + 1, "review": review_id})
+                serializer_picture = PictureReviewSerializer(data=aux)
+                serializer_picture.is_valid(raise_exception=True)
+                serializer_picture.save()
+        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        requests.request("GET", trainingUrl)
+        return Response(serializer.data)
+
+
+
 
 
 class ReviewTouristicPlaceListView(APIView):
@@ -82,7 +111,5 @@ class ReviewUserListView(APIView):
 class AllReviewsForSR(APIView):
     def get(self, request):
         reviews = Review.objects.all()
-
         serializer = ReviewSerializerSR(reviews, many=True)
-
         return Response(serializer.data)
