@@ -46,7 +46,7 @@ class SOSCreateReview(APIView):
         serializer.save()
 
         review_id = serializer.data['review_id']
-        
+
         if 'image' not in request.FILES:
             images = []
         else:
@@ -67,9 +67,6 @@ class SOSCreateReview(APIView):
         trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         return Response(serializer.data)
-
-
-
 
 
 class ReviewTouristicPlaceListView(APIView):

@@ -67,6 +67,106 @@ class TouristicPlaceListView(APIView):
         serializer = TouristicPlaceSerializer(touristicPlaces, many=True)
         return Response(serializer.data)
 
+class TouristicPlaceWithFavourite(APIView):
+    def get(self, request, pk1, pk2):
+        token = request.COOKIES.get('jwt')
+        
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        touristicPlace = TouristicPlace.objects.filter(touristicplace_id=pk1).first()
+        serializer = TPSerializer(touristicPlace)
+        
+        tppictures = PictureTouristicPlace.objects.filter(touristic_place=pk1)
+        picturesSerializer = PictureTouristicPlaceSerializer(tppictures, many=True)
+
+        categorystp =  TouristicPlaceCategory.objects.filter(touristic_place=pk1)
+        categorystpSerializer = CategoryTpSerializer(categorystp, many=True)
+
+
+
+        reviews = Review.objects.filter(touristic_place=pk1)
+
+        review_count = Review.objects.filter(touristic_place=pk1).count()
+        
+        review_avg = Review.objects.filter(touristic_place=pk1).aggregate(Avg('ranking'))
+        
+        funFacts= FunFact.objects.filter(touristic_place=pk1)
+
+        fin_avg = review_avg.get('ranking__avg')
+
+        print('review_avg: ', review_avg)
+
+        #reviewsSerializer = ReviewTpSerializer(reviews, many=True)
+        reviewsSerializer = TotalReviewSerializer(reviews, many=True)
+
+        funFactsSerializer= FunFactSerializer(funFacts, many=True)
+
+        response = Response()
+
+        simExp1 = TouristicPlace.objects.filter(type_place=touristicPlace.type_place).exclude(touristicplace_id=pk1)
+        categories = TouristicPlaceCategory.objects.filter(touristic_place=pk1).values_list('category', flat=True)
+
+        cat_list = []
+        
+        for c in categories:
+            cat_list.append(c)
+        
+        
+        cTp = TouristicPlaceCategory.objects.filter(category__in=cat_list).values_list('touristic_place', flat=True)
+        
+        setps = []
+        
+        for t in cTp:
+            setps.append(t)
+
+
+        simExp2 = TouristicPlace.objects.filter(touristicplace_id__in=setps).exclude(touristicplace_id=pk1)
+
+        simExpFinal = simExp1 | simExp2
+
+        simExpSer = NearbyPlaceSerializer(simExpFinal, many=True)
+
+        print(type(funFactsSerializer.data))
+
+        funfactstr=[]
+        for funfact in funFactsSerializer.data:
+            funfactstr.append(funfact['fact'])
+
+        userId=pk2
+        
+        favourites=Favourite.objects.filter(touristic_place=touristicPlace.touristicplace_id,user=userId)
+        if favourites:
+            try:
+                touristicPlace.isFavourite=True
+            except:
+                print("Error, no existe el campo isFavourite")
+
+        response.data = {
+            'id': touristicPlace.touristicplace_id,
+            'pictures': picturesSerializer.data,
+            'name': touristicPlace.name,
+            'short_info':touristicPlace.short_info,
+            'long_info': touristicPlace.long_info,
+            'categories': categorystpSerializer.data,
+            'latitude': touristicPlace.latitude,
+            'longitude': touristicPlace.longitude,
+            'province':touristicPlace.province.name,
+            'avg_ranking': fin_avg,
+            'number_comments': review_count,
+            'schedule_info':touristicPlace.schedule_info,
+            'fun_facts':funfactstr,
+            'reviews': reviewsSerializer.data,
+            'similarExperiences': simExpSer.data,
+            'isFavourite': touristicPlace.isFavourite
+        }
+        return response
+
 class TouristicPlaceById(APIView):
     def get(self, request, pk):
         token = request.COOKIES.get('jwt')
@@ -138,18 +238,6 @@ class TouristicPlaceById(APIView):
         for funfact in funFactsSerializer.data:
             funfactstr.append(funfact['fact'])
 
-        try:
-            userId=request.data['user_id']
-        except:
-            userId=0
-
-        favourites=Favourite.objects.filter(touristic_place=touristicPlace.touristicplace_id,user=userId)
-        if favourites:
-            try:
-                touristicPlace.isFavourite=True
-            except:
-                print("Error, no existe el campo isFavourite")
-
         response.data = {
             'id': touristicPlace.touristicplace_id,
             'pictures': picturesSerializer.data,
@@ -165,8 +253,7 @@ class TouristicPlaceById(APIView):
             'schedule_info':touristicPlace.schedule_info,
             'fun_facts':funfactstr,
             'reviews': reviewsSerializer.data,
-            'similarExperiences': simExpSer.data,
-            'isFavourite': touristicPlace.isFavourite
+            'similarExperiences': simExpSer.data
         }
         return response
 
