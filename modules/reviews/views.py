@@ -35,7 +35,7 @@ class CreateReview(APIView):
                 serializer_picture = PictureReviewSerializer(data=aux)
                 serializer_picture.is_valid(raise_exception=True)
                 serializer_picture.save()
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-3-92-88-156.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         return Response(serializer.data)
 
@@ -64,7 +64,7 @@ class SOSCreateReview(APIView):
                 serializer_picture = PictureReviewSerializer(data=aux)
                 serializer_picture.is_valid(raise_exception=True)
                 serializer_picture.save()
-        trainingUrl="http://ec2-3-95-56-39.compute-1.amazonaws.com/trainmatrices"
+        trainingUrl="http://ec2-3-92-88-156.compute-1.amazonaws.com/trainmatrices"
         requests.request("GET", trainingUrl)
         return Response(serializer.data)
 
