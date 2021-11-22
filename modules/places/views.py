@@ -312,7 +312,7 @@ class NearbyPlaces(APIView):
         serializer = NearbyPlaceSerializer(tplist, many=True)
         userId=request.data['user_id']
 
-        url="http://ec2-3-92-88-156.compute-1.amazonaws.com/simusrec"
+        url="http://ec2-34-234-66-195.compute-1.amazonaws.com/simusrec"
         payload = json.dumps({
             "user_id": userId
         })
