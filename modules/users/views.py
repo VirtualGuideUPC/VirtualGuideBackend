@@ -85,19 +85,32 @@ class ChatbotPreferenceMessage(APIView):
         #call the chatbot service
         if(msgserializer.is_valid()):
 
-            url = "http://ec2-54-235-10-1.compute-1.amazonaws.com/prediction"
+            url = "http://127.0.0.1:5000/prediction"
             payload = json.dumps({
-                "msg": request.data['text'],
+                "text": request.data['text'],
+                "user": request.data['user']
             })
             headers = {
                 'Content-Type': 'application/json',
             }
             response = requests.request("POST", url, headers=headers, data=payload)
-            botResponseMsg=response.json()['msg']
-
+            
+            print(response.json())
+            
+            try:
+                botResponseMsg=response.json()['robot_response']['text']
+            except:
+                botResponseMsg=""
+            
+            try:
+                botUrl=response.json()['robot_response']['url']
+            except:
+                botUrl=""
+            
             #save chatbot message to db
             request.data['is_user']=False
             request.data['text']=botResponseMsg
+            request.data['url']=botUrl
             botmsgserializer= MessageSerializer(data=request.data)
             botmsgserializer.is_valid(raise_exception=True)
             botmsgserializer.save()
