@@ -127,7 +127,7 @@ class TotalReviewSerializerUser(serializers.ModelSerializer):
 
 
 class ReviewSerializerSR(serializers.ModelSerializer):
-
+    
     class Meta:
         model = Review
         fields = ['ranking', 'touristic_place', 'user']
